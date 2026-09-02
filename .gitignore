@@ -1,0 +1,7 @@
+# Private state registry — infrastructure IDs, credential-store location.
+# Never commit a filled-in registry to this or any repo. Only the .template.md
+# under references/ is distribution material.
+state-registry.md
+my-registry.md
+__pycache__/
+*.pyc
