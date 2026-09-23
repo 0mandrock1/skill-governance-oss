@@ -4,7 +4,7 @@ Governing document for a **collection** of Claude Skills that must stay coherent
 past the point where one person can hold it in their head.
 
 A single skill needs no framework. Twenty skills sharing state, credentials and trigger space
-do. This document is the contract that keeps them from colliding, and `scripts/` are the
+do. This file is the contract that keeps them from colliding, and `scripts/` are the
 linters that prove the contract holds.
 
 **Read order for any skill work:** this file → `references/` as needed → your own
@@ -53,8 +53,8 @@ Skills are modelled as classes. This is the whole conceptual load of the framewo
 ├── {skill-name}/
 │   ├── SKILL.md               ← required
 │   ├── references/            ← docs read on demand
-│   ├── scripts/                ← deterministic helpers
-│   └── assets/                 ← fonts, templates, icons
+│   ├── scripts/               ← deterministic helpers
+│   └── assets/                ← fonts, templates, icons
 ```
 
 **Frontmatter spec** — `name` and `description` are required; `version` and `compatibility`
@@ -173,9 +173,11 @@ pipeline). Duplicate when it is a couple of lines of prose.
 ### 5.3 The State Registry
 
 Every collection keeps one registry file listing every unit of persistent state and its owner.
-Template: `references/state-registry.template.md`. Your filled-in registry is a **separate,
-private file** — copy the template outside this repository, fill it in, and never commit it;
-see `.gitignore` and `scripts/registry_guard.sh`.
+Template: `references/state-registry.template.md`. Your filled-in registry is a **private
+file that never reaches a git remote**. Keep it either as `references/state-registry.md`
+inside this skill (git-ignored; lets a packaged `.skill` carry it; the path the scripts check
+by default) or anywhere outside the repository and pass it as `--registry`. See `.gitignore`
+and `scripts/registry_guard.sh`.
 
 The registry holds IDs **for bootstrap and debugging only**. At runtime, consumers reach state
 through the owner, never by ID.
@@ -318,7 +320,10 @@ anything in a skill collection.
 and model identifiers are stale within a quarter.
 
 When a skill needs an environment fact, it reads the registry — it does not carry its own
-copy. Duplicated environment facts diverge, and the divergence is invisible until something
+copy. The same holds for the collection's **meta-skills** list (the skills that author, edit,
+package, sync or translate other skills and therefore load this framework first): it lives
+under `## Environment → Meta-skills` in the registry and is passed to
+`scripts/install_enforcement.sh --meta`, never written into this file. Duplicated environment facts diverge, and the divergence is invisible until something
 breaks in production.
 
 ---
@@ -363,7 +368,7 @@ action it cannot perform and reporting success.
 
 | File | Read when |
 |---|---|
-| your private registry (copied from the template, kept outside this repo) | any question of who owns what, which ID, which connector |
+| your private registry (`references/state-registry.md` or your `--registry` file) | any question of who owns what, which ID, which connector |
 | `references/state-registry.template.md` | starting a collection, or restructuring the registry |
 | `references/trigger-policy.md` | naming triggers, resolving a collision, splitting a family |
 | `references/lifecycle.md` | installing, deprecating, retiring, renaming, splitting, merging |
@@ -377,7 +382,7 @@ action it cannot perform and reporting success.
 Run all three scripts together before considering any skill change finished:
 
 ```bash
-python3 scripts/validate_registry.py --skills {collection-root} --registry {your-registry.md}
+python3 scripts/validate_registry.py --skills {collection-root} [--registry {your-registry.md}]
 python3 scripts/lint_dependencies.py --skills {collection-root}
 python3 scripts/audit_triggers.py  --skills {collection-root}
 ```

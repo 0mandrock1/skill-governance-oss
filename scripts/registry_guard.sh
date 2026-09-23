@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # registry_guard.sh — keep the private state registry out of every git remote.
 #
-# Runs from cron on the VPS. Scans configured roots for git repositories, and for each one
+# Runs from cron on your host. Scans configured roots for git repositories, and for each one
 # checks whether the private registry has appeared in the working tree or the index.
 #
 # Design rule: NEVER destroy the only copy. If a canonical copy exists outside every repo,
@@ -21,7 +21,7 @@ set -uo pipefail
 
 # --- configuration -----------------------------------------------------------------------
 REGISTRY_NAME="${REGISTRY_NAME:-state-registry.md}"
-ALT_NAMES="${ALT_NAMES:-my-registry.md}"
+ALT_NAMES="${ALT_NAMES:-}"
 CANONICAL="${CANONICAL:-$HOME/private/state-registry.md}"
 SEARCH_ROOTS="${SEARCH_ROOTS:-$HOME /opt /srv}"
 MAX_DEPTH="${MAX_DEPTH:-6}"

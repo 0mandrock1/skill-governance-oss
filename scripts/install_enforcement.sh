@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 # Install framework enforcement layers 2 and 5.
 #
-#   ./install_enforcement.sh --skills ~/.claude/skills [--repo ~/claude-config] \
-#                            [--registry ~/my-registry.md] [--dry-run]
+#   ./install_enforcement.sh --skills ~/.claude/skills [--repo ~/skills-repo] \
+#                            [--registry ~/my-registry.md] [--meta "skill-creator ..."] [--dry-run]
+#
+# --meta (or env FRAMEWORK_META_SKILLS): space-separated meta-skills that get Step 0.
+# Default: skill-creator. Keep your full list in the private registry, not here.
+# env REGISTRY_NAMES: extra file names the pre-commit hook must refuse (space-separated).
 #
 # Layer 2: inject a mandatory Step 0 block into every meta-skill (idempotent).
 # Layer 5: install a pre-commit hook that blocks commits touching a SKILL.md when any
@@ -14,14 +18,15 @@ FRAMEWORK_NAME="skill-creator-framework"
 SKILLS=""; REPO=""; REGISTRY=""; DRY=0
 MARKER="<!-- ${FRAMEWORK_NAME}:step0 -->"
 
-META_SKILLS=(skill-creator skill-rosetta skill-doc-framework skill-translator
-             skills-sync cowork-prompt cc-prompt-writer)
+META="${FRAMEWORK_META_SKILLS:-skill-creator}"
+REGISTRY_NAMES="state-registry.md ${REGISTRY_NAMES:-}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --skills)   SKILLS="$2"; shift 2 ;;
     --repo)     REPO="$2"; shift 2 ;;
     --registry) REGISTRY="$2"; shift 2 ;;
+    --meta)     META="$2"; shift 2 ;;
     --dry-run)  DRY=1; shift ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
@@ -29,6 +34,8 @@ done
 
 [[ -n "$SKILLS" ]] || { echo "--skills is required" >&2; exit 2; }
 [[ -d "$SKILLS" ]] || { echo "no such directory: $SKILLS" >&2; exit 2; }
+read -r -a META_SKILLS <<< "$META"
+REG_RE="$(for n in $REGISTRY_NAMES; do printf '%s\n' "${n%.md}"; done | sed 's/[.[\*^$]/\\&/g' | paste -sd'|' -)"
 
 step0_block() {
   cat <<BLOCK
@@ -108,7 +115,7 @@ set -uo pipefail
 staged="\$(git diff --cached --name-only)"
 
 # Hard block: the private state registry must never be committed.
-if echo "\$staged" | grep -Eq '(^|/)(state-registry|my-registry)\.md$'; then
+if echo "\$staged" | grep -Eq '(^|/)(${REG_RE})\.md$'; then
   echo "commit blocked: the private state registry is staged."
   echo "unstage it:  git rm --cached <path>"
   echo "it is git-ignored by design; see scripts/registry_guard.sh"

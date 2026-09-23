@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-23 — 2.2.0: de-hardcode
+
+- Meta-skills list moved out of the framework files into the private registry
+  (`## Environment → Meta-skills`); `install_enforcement.sh --meta` / `FRAMEWORK_META_SKILLS`,
+  default `skill-creator`.
+- Pre-commit hook refuses registry file names from `REGISTRY_NAMES` instead of a baked-in name.
+- Registry location wording unified: bundled `references/state-registry.md` (git-ignored) or `--registry`.
+- Step 0 block points at `{skills-root}`, not a fixed install path.
+
 ## 2026-09-02 — initial public extraction
 
 - Extracted `skill-creator-framework` (governing spec, three linters, references,

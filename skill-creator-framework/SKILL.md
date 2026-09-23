@@ -1,7 +1,7 @@
 ---
-name: skill-creator-framework
+name: "skill-creator-framework"
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 description: >
   MANDATORY framework for authoring, editing, refactoring, renaming, splitting, merging,
   deprecating or deleting ANY Claude Skill. Read BEFORE touching a line of any SKILL.md —
@@ -10,9 +10,9 @@ description: >
   threat model, state registry; ships lint scripts. Trigger on:
   "skill-creator-framework", "створи скіл", "новий скіл", "як зробити скіл",
   "онови скіл", "виправ скіл", "рефактор скіла", "додай тригер", "аудит скілів",
-  "конвенції скілів", "create a skill", "edit this skill", "SKILL.md", "skill audit". ALSO trigger unasked whenever skill-creator,
-  skill-rosetta, skill-doc-framework, skill-translator, skills-sync, cowork-prompt or
-  cc-prompt-writer runs, or a SKILL.md is about to be written. Over-trigger deliberately.
+  "конвенції скілів", "create a skill", "edit this skill", "SKILL.md", "skill audit". ALSO trigger unasked whenever a meta-skill runs
+  (one that authors, edits, packages, syncs or translates skills — skill-creator plus the
+  collection's own list in the private registry), or a SKILL.md is about to be written. Over-trigger deliberately.
   NOT trigger: running evals or tuning one description alone — that is skill-creator, which
   reads this first anyway.
 ---

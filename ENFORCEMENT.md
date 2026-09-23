@@ -38,7 +38,7 @@ immediately after the frontmatter of each meta-skill:
 ```markdown
 ## Step 0 — MANDATORY
 
-Read `/mnt/skills/user/skill-creator-framework/SKILL.md` in full before doing anything
+Read `{skills-root}/skill-creator-framework/SKILL.md` in full before doing anything
 else in this skill. It governs naming, encapsulation, dependencies, trigger space and
 lifecycle. Do not skip it for "small" edits — a description tweak changes the shared trigger
 namespace and is exactly the change that breaks a collection silently.
@@ -47,8 +47,10 @@ After finishing, run all three lint scripts and report the results:
 `validate_registry.py`, `lint_dependencies.py`, `audit_triggers.py`.
 ```
 
-Targets: `skill-creator`, `skill-rosetta`, `skill-doc-framework`, `skill-translator`,
-`skills-sync`, `cowork-prompt`, `cc-prompt-writer`.
+Targets: the collection's meta-skills — `skill-creator` plus whatever your private registry
+lists under `## Environment → Meta-skills`. Pass them to the installer as
+`--meta "skill-creator skill-a skill-b"` (or env `FRAMEWORK_META_SKILLS`); the list is data
+about your collection, so it never lives in this file.
 
 `scripts/install_enforcement.sh` does this idempotently.
 
@@ -106,8 +108,8 @@ next commit, not the next month.
 
 ```bash
 # layer 2
-grep -L "skill-creator-framework" ~/.claude/skills/{skill-creator,skill-rosetta,\
-skill-doc-framework,skill-translator,skills-sync,cowork-prompt,cc-prompt-writer}/SKILL.md
+META="skill-creator ..."   # same list you passed to --meta
+for s in $META; do grep -L "skill-creator-framework" ~/.claude/skills/$s/SKILL.md; done
 
 # layer 3
 grep -c "skill-creator-framework" ~/.claude/CLAUDE.md
