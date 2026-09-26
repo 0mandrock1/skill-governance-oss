@@ -1,5 +1,7 @@
 # skill-governance-oss
 
+![skill-governance-oss](assets/cover.png)
+
 A governance spec plus three linters for **collections** of Claude Skills — one skill needs no
 framework, twenty skills sharing state, credentials and trigger space do.
 
