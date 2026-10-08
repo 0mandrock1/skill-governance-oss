@@ -1,7 +1,7 @@
 ---
 name: skill-translator
 description: >
-  Translates one of Mark's Claude SKILL.md files into platform-native configs:
+  Translates one of the user's Claude SKILL.md files into platform-native configs:
   ChatGPT Custom GPT (Instructions + Actions), Google Gemini Gem (Instructions +
   knowledge), Apple Shortcuts (deterministic workflow recipe), Grok custom
   instructions + xAI tool schema, DeepSeek system prompt + OpenAI-compatible
@@ -40,8 +40,8 @@ Inherits from: skill-creator-framework (read first if modifying this skill itsel
 
 One constraint doesn't disappear for any target platform: **MCP tools inside a
 SKILL.md (Notion/Craft/kiri/Gmail/Calendar etc.) are private connectors
-authorized under Mark's own Claude account.** No translation "activates" those
-calls on ChatGPT/Grok/DeepSeek/Gemini/Shortcuts. Making them real requires Mark
+authorized under the user's own Claude account.** No translation "activates" those
+calls on ChatGPT/Grok/DeepSeek/Gemini/Shortcuts. Making them real requires the user
 to stand up a public HTTPS gateway with auth and describe *that* as an OpenAPI
 schema — separate engineering work, not something this skill can automate.
 
@@ -127,7 +127,7 @@ with platforms nobody requested.
    essential fragments directly into instructions/system_prompt instead.
 6. **Shortcuts, specifically**: do not attempt to hand-generate a binary
    `.shortcut`/plist — Apple's format isn't safely authorable outside
-   Shortcuts.app. Output a numbered, action-by-action recipe Mark assembles
+   Shortcuts.app. Output a numbered, action-by-action recipe the user assembles
    himself, or a `shortcuts://` x-callback-url snippet if the task reduces to
    one trivial HTTP call.
 7. **Write files** per the Output Structure above.
