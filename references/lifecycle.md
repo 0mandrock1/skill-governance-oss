@@ -8,9 +8,10 @@ Read when installing, renaming, splitting, merging, deprecating or retiring a sk
 3. Rename
 4. Split
 5. Merge
-6. Deprecate
-7. Retire
-8. Versioning
+6. Archive
+7. Deprecate
+8. Retire
+9. Versioning
 
 ---
 
@@ -18,7 +19,8 @@ Read when installing, renaming, splitting, merging, deprecating or retiring a sk
 
 ```
 draft ──► tested ──► installed ──► registered ──► maintained ──► deprecated ──► retired
-                                        │
+                                        │               │
+                                        │               └──► archived (reversible, no successor)
                                         └──► renamed / split / merged (stays installed)
 ```
 
@@ -85,7 +87,28 @@ same thing.
 
 ---
 
-## 6. Deprecate
+## 6. Archive
+
+Archive when a skill is dead weight, not a candidate for deprecation: it has no successor,
+nobody depends on it (`lint_dependencies.py` clean with it removed), and keeping it live only
+costs trigger space. Typical case: a leftover demo/example skill, or a skill whose trigger
+space nothing exercises in practice.
+
+Unlike deprecate/retire, archive does not require a successor and does not run a deprecation
+period — it is a cheap, reversible move, not a terminal decision.
+
+1. Confirm no live skill's `Inherits from:`/`Depends on:`/body references this skill's name.
+2. Move the directory: `{live-dir}/<name>/` → `{archive-dir}/<name>/`. Do not edit its content
+   as part of the move — archiving is relocation, not rewrite.
+3. Regenerate the manifest, if your collection keeps one.
+4. Registry: remove owned-state rows only if the skill actually owned state; most archive
+   candidates own none.
+5. Reversal is just moving the directory back plus a manifest regen — keep the commit message
+   honest about why it was archived so a future un-archive isn't a cold read.
+
+---
+
+## 7. Deprecate
 
 Deprecation is a signal, not a removal. The skill keeps working.
 
@@ -97,7 +120,7 @@ Deprecation is a signal, not a removal. The skill keeps working.
 
 ---
 
-## 7. Retire
+## 8. Retire
 
 Preconditions — all four, no exceptions:
 
@@ -111,7 +134,7 @@ leaves an orphan is not a retirement, it is a leak.
 
 ---
 
-## 8. Versioning
+## 9. Versioning
 
 `version:` in frontmatter, semver-flavoured:
 

@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-10-08 — 2.3.0: archive state, merge-audit, effect-arm gate, de-instantiation
+
+- SPEC.md §6 (Trigger-Collision Policy): three new rules — merge-audit every singleton skill
+  before a second instance ships; "family named after its first member" smell (rename the
+  parent before it acquires a second child); fail-closed default on an ambiguous merge/no-merge
+  call.
+- `references/lifecycle.md`: new `archived` state, distinct from deprecate/retire — no
+  successor required, no deprecation period, reversible (move the directory back + regen the
+  manifest). For dead-weight skills nobody depends on, not candidates for a deprecation cycle.
+- SPEC.md §8 (Testing): effect-arm check (run the task once with the skill available, once
+  without, same prompt) and a SkillGLoW-style commit gate —
+  `effect(new) ≥ max(effect(current), effect(no-skill)) − ε`. A skill that regresses against
+  the no-skill baseline is a blocking defect, not a style note.
+- SPEC.md §10 (Writing Rules): rule 9, de-instantiation — a behavioural parent's contract must
+  stay runtime-agnostic; instance-shaped detail (a PID, a run-dir, a literal file name, a
+  concrete hostname) belongs to the child that has it, never the parent, even with only one
+  child today.
+- New `scripts/lint_deinstantiation.py`: heuristic WARN-only lint for the rule above — scans
+  every parent declaring `## Instances` for leaked instance-shaped tokens outside its own
+  Instances table.
+- New `references/consolidation.md`: four worked merge examples side by side, with
+  version-bump sizing and the failed-attempt lessons each one produced (domain names
+  anonymized per this repo's own redaction rule — see `CASE.md`).
+- Prior Art: added SkillGLoW (arXiv:2609.02217, CC BY 4.0) as the source for the
+  effect-arm/commit-gate and the family-naming smell.
+- Removed `skill-creator-set/`, `skill-creator-set-unpack/` and `mcp-builder/` from this repo
+  — unused peer skills that had drifted out of the published surface; `skill-creator-pack/`'s
+  NOT-trigger line updated to drop the now-dangling reference.
+
 ## 2026-09-23 — 2.2.0: de-hardcode
 
 - Meta-skills list moved out of the framework files into the private registry

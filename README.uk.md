@@ -64,14 +64,11 @@ examples/collection/       скіли, навмисно зіпсовані, що
 CASE.md                    реальний прогін по 116 скілах цілком
 skill-creator-framework/   тонкий покажчик-скіл, щоб `Inherits from:`/`Depends on:` резолвились (див. SPEC.md)
 skill-creator-pack/        упакувати скіл (чи набір) для дистрибуції
-skill-creator-set/         зібрати кілька скілів у один архів для шерингу
-skill-creator-set-unpack/  встановити бандл у цільову колекцію
 skill-translator/          перекласти мову тригера скіла, не зламавши тригерингу
 skill-rosetta/             звірка термінології між мовами в багатомовній колекції
 skill-doc-framework/       конвенції авторства для reference-документів, які скіли читають on-demand
 cc-prompt-writer/          генерація промптів/конфігів Claude Code (CLAUDE.md, субагенти, таски)
 cc-remote-agent/           базовий контракт делегування headless-роботи на віддалений вузол
-mcp-builder/               побудова нових MCP-серверів (гайд Anthropic, без змін)
 cowork-agents/             патерни розкидання роботи по субагентах усередині однієї сесії
 ```
 

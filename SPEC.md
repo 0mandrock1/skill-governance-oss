@@ -218,6 +218,18 @@ scoped to one `SKILL.md` has no view of the other 100.
    destination, depth, runtime — and each names the others in its NOT-trigger line.
 5. **Run `scripts/audit_triggers.py` after adding or editing any description.** It reports
    phrases claimed by more than one skill.
+6. **Merge-audit every singleton skill before it ships a second instance.** The moment a
+   second near-identical skill appears (same contract, different domain — see the four
+   worked cases in `references/consolidation.md`), audit whether it should instead become an
+   instance of a shared behavioural parent. Do not wait for a third.
+7. **Smell: "family named after one member."** If a behavioural parent's name is literally
+   the first instance's name, that is evidence the parent was never designed as a parent — it
+   was promoted mid-flight. Rename the parent to a domain-neutral name before adding a second
+   child, or the trigger space inherits the confusion.
+8. **Fail-closed on ambiguous merge/no-merge calls.** When the decision table in
+   `references/trigger-policy.md` does not clearly resolve, default to NOT merging. A missed
+   merge costs one redundant skill; a wrong merge produces a lint FAIL (two behavioural
+   parents) or a silently broken contract, both more expensive to unwind later.
 
 Full decision table and worked examples: `references/trigger-policy.md`.
 
@@ -259,6 +271,22 @@ extraction, code generation, fixed workflows) warrant quantitative evals; subjec
 
 Record which prompts were used, in the skill's own `references/` — otherwise the next edit
 re-tests from zero.
+
+**Effect-arm check before shipping a non-trivial skill.** Run the task once with the skill
+available and once without it (same prompt, same model). If the with-skill run is not clearly
+better than the no-skill baseline, the skill is not earning its trigger-space cost — fix or
+archive it (§6) rather than shipping it anyway.
+
+**Commit gate.** Accept a new or changed skill only if:
+
+```
+effect(new) ≥ max(effect(current), effect(no-skill)) − ε
+```
+
+i.e. it must not be worse than both what currently ships and than not having the skill at
+all, within a small tolerance ε for noise. A skill that regresses against the no-skill
+baseline is actively harmful, not merely unhelpful — treat that as a blocking defect, not a
+style note. (Adapted from SkillGLoW's commit-gate; see Prior Art.)
 
 ---
 
@@ -306,6 +334,13 @@ Never install a skill from an untrusted source without reading every line of its
    lessons-learned into normative rules makes the norms unreadable.
 8. **Principle of lack of surprise.** A skill's behaviour must match its description. No
    hidden network calls, no unrequested writes, no side effects a reader would not predict.
+9. **De-instantiate the parent.** A behavioural parent's contract must stay runtime-agnostic.
+   If a `Core contract`/`Produce`/`Resume`-style step names a concrete tool, a concrete field
+   set (a run ID, a PID, a literal file name), or any other detail that varies per instance,
+   that detail belongs in the child that actually has that instance, not in the shared parent
+   — even if today there happens to be only one child. Run `scripts/lint_deinstantiation.py`
+   after editing any skill with `## Instances`; it flags instance-shaped tokens leaking into
+   parent body text.
 
 ---
 
@@ -405,6 +440,13 @@ insight at the single-skill level:
 - **obra/superpowers**, skill `writing-skills`, is the best treatment available of what makes
   *one* trigger description good. This framework assumes that quality and asks the next
   question: what happens when twenty good triggers compete for the same phrase.
+
+- **SkillGLoW** (arXiv:2609.02217, CC BY 4.0) treats a reusable unit as a *procedural
+  family* — applicability + core procedure + failure modes — and gates any commit to a skill
+  with `effect(new) ≥ max(effect(current), effect(no-skill)) − ε`, plus append-only repair
+  guards so a fix never silently overwrites prior learning. §8's effect-arm/commit-gate and
+  §6's merge-audit are adapted from it; its biggest reported failure mode — a family named
+  after its first member, net gain ≈ 0 — is this framework's §6 smell.
 
 None of the above addresses semantic overlap between trigger descriptions across a whole
 collection, or who owns a given piece of persistent state — the two defect classes this

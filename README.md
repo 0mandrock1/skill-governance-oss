@@ -69,14 +69,11 @@ examples/collection/       skills deliberately broken so the linters FAIL on the
 CASE.md                    the real 116-skill run in full
 skill-creator-framework/   thin pointer skill so `Inherits from:`/`Depends on:` resolve (see SPEC.md)
 skill-creator-pack/        pack a skill (or set of skills) for distribution
-skill-creator-set/         bundle several skills into one shareable archive
-skill-creator-set-unpack/  install a bundle into a target collection
 skill-translator/          translate a skill's trigger language without breaking triggering
 skill-rosetta/             cross-reference terminology across a multilingual collection
 skill-doc-framework/       authoring conventions for reference docs skills read on demand
 cc-prompt-writer/          generate Claude Code prompts/configs (CLAUDE.md, subagents, tasks)
 cc-remote-agent/           base contract for delegating headless work to a remote node
-mcp-builder/               build new MCP servers (Anthropic's guide, unmodified)
 cowork-agents/             patterns for fanning work out to subagents within one session
 ```
 

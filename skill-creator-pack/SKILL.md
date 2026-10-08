@@ -8,8 +8,7 @@ description: >
   Trigger коли Mark каже: "запакуй скіл", "зроби .skill", "збери скіл в архів",
   "запакуй як skill-creator", "віддай скіл файлом", "skill-creator-pack",
   "/skill-creator-pack", або коли скіл щойно відредаговано і його треба віддати
-  назовні одним файлом. НЕ trigger: пачка скілів, що змінились разом, в один
-  бандл — це `skill-creator-set`; синхронізація живих скілів з бекап-репою —
+  назовні одним файлом. НЕ trigger: синхронізація живих скілів з бекап-репою —
   `skills-sync`; авторинг, евали і тюнінг description — `skill-creator`
   (він читає `skill-creator-framework` першим); експорт скіла на інші платформи
   (ChatGPT/Gemini/Grok) — `skill-translator`.
